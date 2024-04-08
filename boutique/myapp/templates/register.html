@@ -1,0 +1,35 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}S'inscrire{% endblock %}
+
+{% block content %}
+
+
+<h1>
+    <center>
+    Inscription
+</center>
+</h1>
+<br>
+<br>
+<br>
+
+
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-8">
+                <form method="POST" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">S'inscrire</button>
+                </form>
+            </div>
+        </center>
+    </div>
+</div>
+<br>
+<br>
+
+{% endblock %}

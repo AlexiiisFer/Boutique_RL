@@ -1,0 +1,69 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}Produit{% endblock %}
+
+{% block content %}
+<br><br><br>
+<div class="card mb-3" style="max-width: 1000px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+
+        {% if produit.is_promo %}
+        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Promo !</div>
+        <img src="{{ produit.image.url }}" class="img-fluid rounded-start" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{ produit.name }}</h5>
+          <p class="card-text">{{ produit.description }}</p>
+          <p class="card-text"><strike>${{ produit.price}} €</strike>
+            {{ produit.promo_price}} €</p>
+        </div>
+      </div>
+        {% else %}
+        <img src="{{ produit.image.url }}" class="img-fluid rounded-start" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{ produit.name }}</h5>
+          <p class="card-text">{{ produit.description }}</p>
+          <p class="card-text">{{ produit.price }} €</p>
+        </div>
+      </div>
+        {% endif %}
+        <div class="card-body">
+          <center>
+        <button type="button" value="{{ produit.id }}" class="btn btn-secondary" id="add-panier">Ajouter au panier</button>
+      </center>
+      </div>
+    </div>
+  </div>
+  <br><br><br><br><br><br>
+
+ <script> 
+// Permet de voir si le boutton panier est pressé
+$(document).on('click', '#add-panier', function(e){
+    e.preventDefault();
+    $.ajax({
+        type: "POST",
+        url: "{% url 'panier_add' %}",
+        data: {
+            produit_id: $("#add-panier").val(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action : 'post'
+        },
+        success: function(json){
+            document.getElementById("panier_quantite")
+              .textContent = json.qtite;
+
+        },
+        error: function(xhr, errmsg, err){
+            console.log(xhr.status + ": " + xhr.responseText);
+        },
+    })
+})
+
+
+</script> 
+{% endblock %}

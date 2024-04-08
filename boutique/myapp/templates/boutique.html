@@ -1,0 +1,98 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}Boutique{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Filtrer les produits</h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{% url 'boutique' %}">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <select class="form-select" id="category" name="category" title="Select a category">
+                    
+                            <option value="">Toutes les catégories</option>
+                            {% for categorie in categories %}
+                                <option value="{{ categorie }}">{{ categorie }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="text" class="form-control" name="q" placeholder="Rechercher par nom">
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Filtrer et rechercher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+
+            {% for produit in produits %}
+            {% if produit.is_promo %}
+            <div class="col mb-5">
+                <div class="card h-100">
+                    <!-- Sale badge-->
+                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Promo !</div>
+                    <!-- Product image-->
+                    <img class="card-img-top" src="{{ produit.image.url }}" alt="..." />
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">{{ produit.name }}</h5>
+                            <!-- Product price-->
+                            <strike>${{ produit.price}} €</strike>
+                            {{ produit.promo_price}} €
+
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'produit' produit.id %}">Options</a></div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+
+
+            <div class="col mb-5">
+                <div class="card h-100">
+                    <!-- Product image-->
+                    <img class="card-img-top" src="{{ produit.image.url }}" alt="..." />
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">{{ produit.name }}</h5>
+                            <!-- Product price-->
+
+                            {{ produit.price}} €
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'produit' produit.id %}">Options</a></div>
+                    </div>
+                </div>
+            </div>
+
+            {% endif %}
+            {% endfor %}
+
+
+
+        </div>
+    </div>
+</section>
+{% endblock %}

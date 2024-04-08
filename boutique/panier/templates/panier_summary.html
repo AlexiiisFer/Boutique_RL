@@ -1,0 +1,35 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}A propos{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron jumbotron-fluid" style="background-color: darkgrey; background-size: cover;">
+    <div class="container text-center">
+        <h1 class="display-4 text-white">Votre Panier</h1>
+        <p class="lead text-white">Voici les produits que vous avez ajoutés à votre panier.</p>
+    </div>
+</div>
+
+{% for produit in panier_produits %}
+<div class="card mb-3" style="max-width: 1000px;">
+    <div class="row no-gutters">
+        <div class="col-md-4">
+            <img src="{{ produit.image.url }}" class="img-fluid rounded-start" alt="{{ produit.name }}">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">{{ produit.name }}</h5>
+                <p class="card-text">{{ produit.description }}</p>
+                <!-- <p class="card-text"><small class="text-muted">Quantité : {{ produit.quantite }}</small></p>
+                <button class="btn btn-primary">Modifier la quantité</button>
+                <button class="btn btn-danger">Supprimer du panier</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+{% endblock %}

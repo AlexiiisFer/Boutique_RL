@@ -1,0 +1,40 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+
+
+<h1>
+    <center>
+    Connexion
+</center>
+</h1>
+<br>
+<br>
+<br>
+
+
+<div class="container">
+    <div class="row">
+        <center>
+            <div class="col-8">
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="username" placeholder="Saississez votre pseudo">
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="password" placeholder="Saississez votre mot de passe">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Validez</button>
+                </form>
+            </div>
+        </center>
+    </div>
+</div>
+<br>
+<br>
+
+{% endblock %}
