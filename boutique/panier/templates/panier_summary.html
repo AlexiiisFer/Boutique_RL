@@ -22,15 +22,78 @@
             <div class="card-body">
                 <h5 class="card-title">{{ produit.name }}</h5>
                 <p class="card-text">{{ produit.description }}</p>
-                <!-- <p class="card-text"><small class="text-muted">Quantité : {{ produit.quantite }}</small></p>
-                <button class="btn btn-primary">Modifier la quantité</button>
-                <button class="btn btn-danger">Supprimer du panier</button> -->
-                Hello
-            </div>
+                <p class="card-text"><span class="text-muted">Quantité : </span><select class="text-muted" title="Choisir quantite" id="select{{produit.id}}">
+                    {% for key, value in quantite.items %}
+                    {% if key == produit.id|slugify %}
+                        <option selected>Actuellement : {{ value }}</option>
+                    {% endif %}
+                     {% endfor %}
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                   </select>
+                    </p>
+                    <button type="button" data-index="{{produit.id}}" class="btn btn-primary update-panier" >Modifier</button>
+                    <button type="button" data-index="{{produit.id}}" class="btn btn-danger delete-panier">Supprimer</button>
+                <br>
+                </div>
+
         </div>
     </div>
 </div>
 {% endfor %}
 
+<script>
+
+    // Script pour modifier la quantité d'un produit dans le panier
+    // Permet de voir si le boutton est pressé
+    $(document).on('click', '.update-panier', function (e) {
+      e.preventDefault();
+      // Récupère l'id du produit
+      var produitid = $(this).data('index');
+      $.ajax({
+        type: "POST",
+        url: "{% url 'panier_update' %}",
+        data: {
+          produit_id: $(this).data('index'),
+          produit_qty: $('#select' + produitid + ' option:selected').text(),
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          action: 'post'
+        },
+        success: function (json) {
+            location.reload();
+  
+        },
+        error: function (xhr, errmsg, err) {
+          console.log(xhr.status + ": " + xhr.responseText);
+        },
+      })
+    })
+
+    // Script pour supprimer les produits dans le panier
+    // Permet de voir si le boutton est pressé
+    $(document).on('click', '.delete-panier', function (e) {
+      e.preventDefault();
+      // Récupère l'id du produit
+      $.ajax({
+        type: "POST",
+        url: "{% url 'panier_delete' %}",
+        data: {
+          produit_id: $(this).data('index'),
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          action: 'post'
+        },
+        success: function (json) {
+            location.reload();
+  
+        },
+        error: function (xhr, errmsg, err) {
+          console.log(xhr.status + ": " + xhr.responseText);
+        },
+      })
+    })
+  
+  
+  </script>
 
 {% endblock %}

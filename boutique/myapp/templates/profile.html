@@ -8,17 +8,12 @@
 <body>
     <div class="container mt-5">
         <h2>Modifier le profil</h2>
-        <form method="post">
+        <form method="post" action="{% url 'profile' %}">
             {% csrf_token %}
-            <label for="username">Nom d'utilisateur:</label><br>
-            <input type="text" id="username" name="username" value="{{ user.username }}" disabled><br>
-            <label for="first_name">Prénom:</label><br>
-            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" disabled><br>
-            <label for="last_name">Nom de famille:</label><br>
-            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" disabled><br>
-            <label for="email">Adresse email:</label><br>
-            <input type="email" id="email" name="email" value="{{ user.email }}" disabled><br>
+            {{ user_form.as_p }}
             <button type="submit">Enregistrer les modifications</button>
+            
+            
             <a href="{% url 'logout' %}">Déconnexion</a>
         </form>
     </div>

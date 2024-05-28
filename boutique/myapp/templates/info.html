@@ -1,0 +1,29 @@
+
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}Informations adresses{% endblock %}
+
+{% block content %}
+<body>
+    <div class="container mt-5">
+        <h1>Modifier les adresses</h1><br>
+        <h3>Adresse de facturation</h3>
+        <form method="post" action="{%url 'info' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Enregistrer les modifications</button>
+
+
+            <br><br>
+            <h3>Adresse de livraison</h3>
+            {% csrf_token %}
+            {{ livraison_form.as_p }}
+            <button type="submit">Enregistrer les modifications</button>
+        </form>
+    
+        <a href="{% url 'logout' %}">Déconnexion</a>
+    </div>
+
+</body>
+{% endblock %}

@@ -13,12 +13,14 @@ class Panier():
         #Panier sur tout le site
         self.panier = panier
 
-    def add(self, produit):
+    def add(self, produit, quantite):
         produit_id = str(produit.id)
+        produit_qty = str(quantite)
         if produit_id in self.panier:
             pass
         else:
             self.panier[produit_id] = {'prix' : str(produit.price)}
+            self.panier[produit_id] = int(produit_qty)
 
         self.session.modified = True
     
@@ -29,3 +31,24 @@ class Panier():
         produit_ids = self.panier.keys()
         produits = Produit.objects.filter(id__in=produit_ids)
         return produits
+    
+    def get_quants(self):
+        quantite = self.panier
+        return quantite
+    
+    def update(self, produit, quantite):
+        produit_id = str(produit)
+        produit_qty = int(quantite) 
+        # Le panier
+        lepanier = self.panier
+        #Mise à jour de la quantité
+        lepanier[produit_id] = produit_qty
+        self.session.modified = True
+        return lepanier
+
+    def delete(self, produit):
+        {'4':3, '2':1}
+        produit_id = str(produit)
+        if produit_id in self.panier:
+            del self.panier[produit_id]
+        self.session.modified = True

@@ -19,7 +19,7 @@
     
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="{% url 'home' %}">Trade RL</a>
+        <a class="navbar-brand" href="{% url 'home' %}">GoalMarket</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
                 class="navbar-toggler-icon"></span></button>
@@ -35,6 +35,7 @@
                         
                         {% if user.is_authenticated %}
                         <li><a class="dropdown-item" href="{% url 'profile'%}">Profil</a></li>
+                        <li><a class="dropdown-item" href="{% url 'info'%}">Info Livraison & Facturation</a></li>
                         <li>
                             <hr class="dropdown-divider" />
                         </li>
@@ -75,7 +76,7 @@
     {% endblock %}
 </body>
 <!-- Footer-->
-<footer class="py-5 bg-dark">
+<footer class="py-5 bg-dark mt-auto">
     <div class="container">
         <p class="m-0 text-center text-white">Copyright &copy; Alexis Fernandes 2024</p>
     </div>
