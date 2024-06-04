@@ -52,3 +52,27 @@ class Panier():
         if produit_id in self.panier:
             del self.panier[produit_id]
         self.session.modified = True
+
+    def panier_total(self):
+        produit_ids = self.panier.keys()
+        produits = Produit.objects.filter(id__in=produit_ids)
+        quantite = self.panier
+        total = 0
+        
+        for key, value in quantite.items():
+            key = int(key)
+            for produit in produits:
+                if produit.id == key:
+                    if produit.is_promo:
+                        total += produit.promo_price * value
+                    else:
+                        total += produit.price * value
+        return total
+    
+
+
+    
+    
+    
+    
+    

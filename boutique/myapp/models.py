@@ -12,28 +12,19 @@ class Categorie(models.Model):
         return self.name
     
 class Produit(models.Model):
-    category = models.ForeignKey(Categorie, on_delete=models.CASCADE, default=1)
+    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
     price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     stock = models.IntegerField()
     image = models.ImageField(upload_to='images/Produits')
     #Promo
-    is_promo = models.BooleanField(default=False)
-    promo_price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
+    is_promo = models.BooleanField(default=False,null=True, blank=True)
+    promo_price = models.DecimalField(default=0, max_digits=10, decimal_places=2,null=True, blank=True)
 
     def __str__(self):
         return self.name
         
-class Commande(models.Model):
-    product = models.ForeignKey(Produit, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-    date = models.DateField(default=datetime.datetime.now)
-    status = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.product.name
-
 
 # Profil utilisateur avec adresse de Facturation
 class AdresseFacturation(models.Model):
@@ -68,7 +59,7 @@ class AdresseLivraison(models.Model):
     livraison_rue = models.CharField(max_length=255,null=True, blank=True)
     livraison_ville = models.CharField(max_length=255,null=True, blank=True)
     livraison_code_postal = models.CharField(max_length=255,null=True, blank=True)
-    livraison_Pays = models.CharField(max_length=255,null=True, blank=True)
+    livraison_pays = models.CharField(max_length=255,null=True, blank=True)
 
     def __str__(self):
         return self.user.username

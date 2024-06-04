@@ -1,12 +1,11 @@
 from django.contrib import admin
-from .models import Categorie, Produit, Commande, AdresseFacturation, AdresseLivraison
+from .models import Categorie, Produit,  AdresseFacturation, AdresseLivraison
 from django.contrib.auth.models import User
 
 # Register your models here.
 
 admin.site.register(Categorie)
 admin.site.register(Produit)
-admin.site.register(Commande)
 admin.site.register(AdresseFacturation)
 admin.site.register(AdresseLivraison)
 

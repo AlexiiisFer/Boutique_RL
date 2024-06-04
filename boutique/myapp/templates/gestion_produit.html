@@ -1,0 +1,48 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}Ajout de produits{% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <h2>Ajouter un nouveau produit</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.as_p}}
+        </div>
+        <button type="submit" class="btn btn-primary">Ajouter le produit</button>
+    </form>
+</div>
+
+
+<div class="container mt-5">
+<h2 class="mt-5">Liste des produits</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Prix</th>
+      <th>Promo</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for produit in produits %}
+    <tr>
+      <td>{{ produit.name }}</td>
+      <td>{{ produit.price }} €</td>
+      <td>{% if produit.is_promo %}{{ produit.promo_price }} €{% else %}-{% endif %}</td>
+      <td>
+        <a href="{% url 'supprimer_produit' produit.id %}" class="btn btn-sm btn-danger"
+           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}A propos{% endblock %}
+
+{% block content %}
+
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Facturation</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Saississez votre paiement</p>
+        </div>
+    </div>
+</header>
+<br/>
+<div class="container">
+    <div class="row">
+        
+            <div class="col-md-6 offset-md-3">
+  <div class="card">
+  <div class="card-header">
+    Produits
+  </div>
+  <div class="card-body">
+    {% for produit in panier_produits %}
+        {{ produit.name }}: 
+            {% if produit.is_promo %}
+                ${{ produit.promo_price }}
+            {% else %}
+                ${{ produit.price }}
+        {% endif %}
+
+        <br/>
+        <small>Quantité: 
+        {% for key, value in quantite.items %}
+            {% if key == produit.id|slugify %}
+                {{ value }}
+            {% endif %}
+        {% endfor %}</small>
+        <br/><br/>
+
+    {% endfor %}
+    Total:  ${{ total }}
+    
+  </div>
+</div>
+<br/><br/>
+<div class="card">
+<div class="card-header">
+Adresse de livraison
+</div>
+<div class="card-body">
+
+{% if user.is_authenticated %}
+
+Nom: {{ user.first_name }} {{user.last_name}}<br/>
+Mail: {{ user.email }}<br/>
+Titre: {{ livraison_info.livraison_titre }}<br/>
+Rue: {{ livraison_info.livraison_rue }}<br/>
+Ville: {{ livraison_info.livraison_ville }}<br/>
+Code postal: {{ livraison_info.livraison_code_postal }}<br/>
+Pays: {{ livraison_info.livraison_pays }}<br/>
+
+{% else %}
+
+Nom: {{ livraison_info.name}}<br/>
+Mail: {{ livraison_info.email }}<br/>
+Titre: {{ livraison_info.livraison_titre }}<br/>
+Rue: {{ livraison_info.livraison_rue }}<br/>
+Ville: {{ livraison_info.livraison_ville }}<br/>
+Code postal: {{ livraison_info.livraison_code_postal }}<br/>
+Pays: {{ livraison_info.livraison_pays }}<br/>
+
+{% endif %}
+
+
+</div>
+</div>
+<br/><br/>
+
+<div class="card">
+<div class="card-header">
+Paiement
+</div>
+<div class="card-body">
+<form method="POST" action="{%url 'generer_commande' %}">
+{% csrf_token %}
+{{ paiement_form.as_p }}
+
+</div>
+</div>
+<br/>
+
+
+
+<button type="submit" class="btn btn-secondary">
+Payer
+</button>
+</form>
+<br/><br/>
+
+
+    </div>
+</div>
+</div>
+
+
+{% endblock %}

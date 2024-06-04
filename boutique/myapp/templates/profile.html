@@ -11,11 +11,16 @@
         <form method="post" action="{% url 'profile' %}">
             {% csrf_token %}
             {{ user_form.as_p }}
-            <button type="submit">Enregistrer les modifications</button>
+            <a href="{% url 'password' %}" class="btn btn-outline-dark">Mot de passe</a>
+            <br><br>
+            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+            <RIGHT><a href="{% url 'logout' %}">Déconnexion</a></RIGHT>
             
-            
-            <a href="{% url 'logout' %}">Déconnexion</a>
-        </form>
+
+
+        </form><br>
+
+
     </div>
 </body>
 {% endblock %}

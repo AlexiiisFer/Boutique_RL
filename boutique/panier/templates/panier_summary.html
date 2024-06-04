@@ -1,99 +1,137 @@
 {% extends "nav.html" %}
 {% load static %}
 
+
 {% block title %}A propos{% endblock %}
 
 {% block content %}
 
 <div class="jumbotron jumbotron-fluid" style="background-color: darkgrey; background-size: cover;">
-    <div class="container text-center">
-        <h1 class="display-4 text-white">Votre Panier</h1>
-        <p class="lead text-white">Voici les produits que vous avez ajoutés à votre panier.</p>
-    </div>
+  <div class="container text-center">
+    <h1 class="display-4 text-white">Votre Panier</h1>
+    <p class="lead text-white">Voici les produits que vous avez ajoutés à votre panier.</p>
+  </div>
 </div>
-
+<center>
+{% if panier_produits %}
 {% for produit in panier_produits %}
+
+{% if produit.is_promo %}
 <div class="card mb-3" style="max-width: 1000px;">
-    <div class="row no-gutters">
-        <div class="col-md-4">
-            <img src="{{ produit.image.url }}" class="img-fluid rounded-start" alt="{{ produit.name }}">
-        </div>
-        <div class="col-md-8">
-            <div class="card-body">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="{{ produit.image.url }}" class="img-fluid rounded-start" alt="{{ produit.name }}">
+    </div>
+    <div class="col-md-8">
+        <h5 class="card-title">{{ produit.name }}</h5>
+        <p class="card-text">{{ produit.description }}</p>
+        <p class="card-text"><strike>${{ produit.price }} €</strike> {{ produit.promo_price }} €</p>
+        {% else %}
+        <div class="card mb-3" style="max-width: 1000px;">
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img src="{{ produit.image.url }}" class="img-fluid rounded-start" alt="{{ produit.name }}">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
                 <h5 class="card-title">{{ produit.name }}</h5>
                 <p class="card-text">{{ produit.description }}</p>
-                <p class="card-text"><span class="text-muted">Quantité : </span><select class="text-muted" title="Choisir quantite" id="select{{produit.id}}">
+                <p class="card-text">{{ produit.price }} €</p>
+                {% endif %}
+                <p class="card-text"><span class="text-muted">Quantité : </span><select class="text-muted"
+                    title="Choisir quantite" id="select{{produit.id}}">
                     {% for key, value in quantite.items %}
                     {% if key == produit.id|slugify %}
-                        <option selected>Actuellement : {{ value }}</option>
+                    <option selected>Actuellement : {{ value }}</option>
                     {% endif %}
-                     {% endfor %}
-                     <option value="1">1</option>
-                     <option value="2">2</option>
-                     <option value="3">3</option>
-                   </select>
-                    </p>
-                    <button type="button" data-index="{{produit.id}}" class="btn btn-primary update-panier" >Modifier</button>
-                    <button type="button" data-index="{{produit.id}}" class="btn btn-danger delete-panier">Supprimer</button>
+                    {% endfor %}
+                    {% for q in quantite_options.items %}
+                {% if q.0 == produit.id %}
+                    {% for value in q.1 %}
+                        <option value="{{ value }}">{{ value }}</option>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+                  </select>
+                </p>
+                <button type="button" data-index="{{produit.id}}"
+                  class="btn btn-primary update-panier">Modifier</button>
+                <button type="button" data-index="{{produit.id}}"
+                  class="btn btn-danger delete-panier">Supprimer</button>
                 <br>
-                </div>
+              </div>
 
+            </div>
+          </div>
         </div>
-    </div>
-</div>
-{% endfor %}
+        {% endfor %}
+        <h1>Total : {{total}} €</h1>
+        <a href="{% url 'checkout' %}" class="btn btn-success">Payer</a><br><br>
+        {% else %}
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <center>
+                <h2>Le panier panier semble vide...</h2>
+                <a href="{% url 'boutique' %}" class="btn btn-outline-dark">Retour à la boutique</a>
+              </center>
+            </div>
 
-<script>
+          </div>
+        </div>
+        {% endif %}
 
-    // Script pour modifier la quantité d'un produit dans le panier
-    // Permet de voir si le boutton est pressé
-    $(document).on('click', '.update-panier', function (e) {
-      e.preventDefault();
-      // Récupère l'id du produit
-      var produitid = $(this).data('index');
-      $.ajax({
-        type: "POST",
-        url: "{% url 'panier_update' %}",
-        data: {
-          produit_id: $(this).data('index'),
-          produit_qty: $('#select' + produitid + ' option:selected').text(),
-          csrfmiddlewaretoken: '{{ csrf_token }}',
-          action: 'post'
-        },
-        success: function (json) {
-            location.reload();
-  
-        },
-        error: function (xhr, errmsg, err) {
-          console.log(xhr.status + ": " + xhr.responseText);
-        },
-      })
-    })
+        <script>
 
-    // Script pour supprimer les produits dans le panier
-    // Permet de voir si le boutton est pressé
-    $(document).on('click', '.delete-panier', function (e) {
-      e.preventDefault();
-      // Récupère l'id du produit
-      $.ajax({
-        type: "POST",
-        url: "{% url 'panier_delete' %}",
-        data: {
-          produit_id: $(this).data('index'),
-          csrfmiddlewaretoken: '{{ csrf_token }}',
-          action: 'post'
-        },
-        success: function (json) {
-            location.reload();
-  
-        },
-        error: function (xhr, errmsg, err) {
-          console.log(xhr.status + ": " + xhr.responseText);
-        },
-      })
-    })
-  
-  
-  </script>
+          // Script pour modifier la quantité d'un produit dans le panier
+          // Permet de voir si le boutton est pressé
+          $(document).on('click', '.update-panier', function (e) {
+            e.preventDefault();
+            // Récupère l'id du produit
+            var produitid = $(this).data('index');
+            $.ajax({
+              type: "POST",
+              url: "{% url 'panier_update' %}",
+              data: {
+                produit_id: $(this).data('index'),
+                produit_qty: $('#select' + produitid + ' option:selected').text(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+              },
+              success: function (json) {
+                location.reload();
 
-{% endblock %}
+              },
+              error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+              },
+            })
+          })
+
+          // Script pour supprimer les produits dans le panier
+          // Permet de voir si le boutton est pressé
+          $(document).on('click', '.delete-panier', function (e) {
+            e.preventDefault();
+            // Récupère l'id du produit
+            $.ajax({
+              type: "POST",
+              url: "{% url 'panier_delete' %}",
+              data: {
+                produit_id: $(this).data('index'),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+              },
+              success: function (json) {
+                location.reload();
+
+              },
+              error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+              },
+            })
+          })
+
+
+        </script>
+
+        {% endblock %}

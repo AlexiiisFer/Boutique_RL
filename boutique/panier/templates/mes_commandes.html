@@ -1,0 +1,36 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}Mes Commandes{% endblock %}
+
+{% block content %}
+<br><br><br>
+<div class="container">
+    <h1 class="text-center">Mes Commandes</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID Commande</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Expédiée</th>
+                <th>Date expédiée</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for commande in commandes %}
+            <tr>
+                <td><a href="{%url 'commande_detail' commande.id %}">{{ commande.id }}</td></a>
+                <td>{{ commande.date_ordered }}</td>
+                <td>{{ commande.prix_total }} €</td>
+                <td>{{ commande.expedie|yesno:"Oui,Non" }}</td>
+                <td>{{ commande.date_expedie }}</td>
+            </tr>
+            
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br><br><br><br><br><br>
+{% endblock %}

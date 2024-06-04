@@ -1,0 +1,49 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}Gestion des Commandes{% endblock %}
+
+{% block content %}
+<br><br><br>
+<div class="container">
+    <h1 class="text-center">Commandes à traiter</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID Commande</th>
+                <th>Utilisateur</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Date commande</th>
+                <th>Total</th>
+                <th>Expédiée</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commande in commandes %}
+            {% if commande.expedie == False %}
+            <tr>
+                <td><a href="{%url 'commande_detail' commande.id %}">{{ commande.id }}</td></a>
+                <td>{{ commande.user }}</td>
+                <td>{{ commande.name }}</td>
+                <td>{{ commande.email }}</td>
+                <td>{{ commande.date_ordered }}</td>
+                <td>{{ commande.prix_total }} €</td>
+                <td>{{ commande.expedie|yesno:"Oui,Non" }}</td>
+                <td>
+                    {% if not commande.expediee %}
+                    <form method="post" action="{% url 'marquer_commande_expediee' commande.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Marquer comme expédiée</button>
+                    </form>
+                {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br><br><br><br><br><br>
+{% endblock %}

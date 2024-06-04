@@ -1,24 +1,26 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Produit, Categorie
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, UpdateUserForm, UserInfoForm, AdresseLivraisonForm
+from .forms import SignUpForm, UpdateUserForm, UserInfoForm, AdresseLivraisonForm, ChangePasswordForm, ProduitForm
 from django import forms
 from .models import AdresseFacturation, AdresseLivraison
+from django.contrib.auth.decorators import user_passes_test
 
 # FONCTIONNALITE PRINCIPAL DU SITE.
 
 def home(request):
-    categories = Produit.objects.values_list('category', flat=True).distinct()
+    categories = Produit.objects.values_list('categorie', flat=True).distinct()
+    
 
     # Initialiser une liste pour stocker un produit par catégorie
     unique_produits = []
 
     # Pour chaque catégorie, récupérer un seul produit de cette catégorie
-    for category in categories:
-        produit = Produit.objects.filter(category=category).first()
+    for categorie in categories:
+        produit = Produit.objects.filter(categorie=categorie).first()
         if produit:
             unique_produits.append(produit)
 
@@ -35,7 +37,8 @@ def boutique(request):
 
 def produit(request, pk):
     produit = Produit.objects.get(id=pk)
-    return render(request, 'produit.html', {'produit': produit})
+    quantite_options = range(1, produit.stock + 1)  
+    return render(request, 'produit.html', {'produit': produit, 'quantite_options': quantite_options})
 
 
 
@@ -44,9 +47,9 @@ def product_list(request):
     categories = Categorie.objects.all()
 
     # Filtrage par catégorie
-    category = request.GET.get('category')
-    if category:
-        produits = produits.filter(category=Categorie.objects.get(name=category))
+    categorie = request.GET.get('categorie')
+    if categorie:
+        produits = produits.filter(categorie=Categorie.objects.get(name=categorie))
 
     # Recherche par nom spécifique
     query = request.GET.get('q')
@@ -88,8 +91,9 @@ def register_user(request):
             messages.success(request, "Vous êtes connecté")
             return redirect('home')
         else:
-            messages.error(request, "Erreur lors de l'inscription")
-            return redirect('register')
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+                return redirect('register')
     else:
         return render(request, 'register.html', {'form': form})
 
@@ -131,3 +135,51 @@ def info(request):
     else:
         messages.error(request, "Vous devez être connecté pour accéder à cette page")
         return redirect('login')
+
+def password(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+        if request.method == "POST":
+            form = ChangePasswordForm(current_user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Votre mot de passe a été mis à jour")
+                return redirect('home')
+            else:
+                for error in list(form.errors.values()):
+                    messages.error(request, error)
+                    return redirect('password')
+        else:
+            form = ChangePasswordForm(current_user)
+            return render(request, 'password.html', {'form': form})
+    else:
+        messages.error(request, "Vous devez être connecté pour accéder à cette page")
+        return redirect('login')
+    
+# AJOUTER ARTICLE SUR LE SITE
+
+def is_admin(user):
+    return user.is_staff
+
+@user_passes_test(is_admin)
+def gestion_produit(request):
+    if request.method == 'POST':
+        form = ProduitForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Produit ajouté avec succès !')
+            return redirect('gestion_produit')
+        else:
+            messages.error(request, 'Erreur lors de l\'ajout du produit')
+    else:
+        form = ProduitForm()
+
+    produits = Produit.objects.all()
+    return render(request, 'gestion_produit.html', {'form': form, 'produits': produits})
+
+@user_passes_test(is_admin)
+def supprimer_produit(request, produit_id):
+    produit = get_object_or_404(Produit, id=produit_id)
+    produit.delete()
+    messages.success(request, 'Produit supprimé avec succès !')
+    return redirect('gestion_produit')

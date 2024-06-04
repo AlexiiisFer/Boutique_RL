@@ -1,0 +1,84 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}A propos{% endblock %}
+
+{% block content %}
+
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Récapitulatif</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Revoir la commande...</p>
+        </div>
+    </div>
+</header>
+<br />
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Récapitulatif
+                </div>
+                <div class="card-body">
+                    {% for produit in panier_produits %}
+                    {{ produit.name }}:
+                    {% if produit.is_promo %}
+                    {{ produit.promo_price }} €
+                    {% else %}
+                    {{ produit.price }} €
+                    {% endif %}
+
+                    <br />
+                    <small>Quantité:
+                        {% for key, value in quantite.items %}
+                        {% if key == produit.id|slugify %}
+                        {{ value }}
+
+                        {% endif %}
+                        {% endfor %}</small>
+                    <br /><br />
+
+                    {% endfor %}
+                    Total: {{ total }} €
+                    <br /><br />
+                    <a href="{% url 'panier_summary' %}" class="btn btn-sm btn-outline-secondary">Modifier les
+                        articles</a>
+                </div>
+            </div>
+            <br /><br />
+            <div class="card">
+                <div class="card-header">
+                    Adresse de livraison
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{%url 'paiement' %}">
+                        {%if user.is_authenticated %}
+                        {% csrf_token %}
+                        {{ livraison_form.as_p }}
+                        {% else %}
+                        {% csrf_token %}
+                        {{ userunlog.as_p }}
+                        {{ livraison_form.as_p }}
+                        {% endif %}
+
+
+                </div>
+            </div>
+            <br />
+
+            <button type="submit" class="btn btn-secondary">Continuer le paiement</button>
+            </form>
+
+
+            <br /><br />
+
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

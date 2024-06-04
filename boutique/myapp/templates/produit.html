@@ -39,9 +39,9 @@
       <div class="col-md-2">Quantité :</div>
       <div class="col-md-2">
         <select class="form-select form-select-sm" title="Choisir quantité" id="qty-panier">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
+          {% for i in quantite_options %}
+          <option value="{{ i }}">{{ i }}</option>
+          {% endfor %}
         </select>
       </div>
     </div>
@@ -75,6 +75,7 @@
       success: function (json) {
         document.getElementById("panier_quantite")
           .textContent = json.qtite;
+        location.reload();
 
       },
       error: function (xhr, errmsg, err) {
