@@ -98,21 +98,3 @@ class AdresseLivraisonForm(forms.ModelForm):
 		fields = ('livraison_titre', 'livraison_rue', 'livraison_ville', 'livraison_code_postal', 'livraison_pays')
 
 		exclude = ['user']
-
-# Form qui permet d'ajouter des produits directement sur le site
-
-class ProduitForm(forms.ModelForm):
-	categorie = forms.ModelChoiceField(queryset=Categorie.objects.all(), widget=forms.Select(attrs={'class':'form-control'}))
-	name = forms.CharField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nom du produit'}))
-	description = forms.CharField(label="", widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Description du produit'}))
-	price = forms.DecimalField(label="", widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Prix du produit'}))
-	stock = forms.IntegerField(label="", widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Stock du produit'}))
-	image = forms.ImageField(label="", widget=forms.FileInput(attrs={'class':'form-control'}))
-	is_promo = forms.BooleanField(label="Promotion", required=False, widget=forms.CheckboxInput(attrs={'class':'form-check-input'}))
-	promo_price = forms.DecimalField(label="", required=False, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Prix promotionnel'}))
-
-	class Meta:
-		model = Produit
-		fields = ['categorie', 'name', 'description', 'price', 'stock', 'image', 'is_promo', 'promo_price']
-
-		
